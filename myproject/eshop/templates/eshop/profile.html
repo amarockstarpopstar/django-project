@@ -1,0 +1,120 @@
+{% extends 'eshop/base.html' %}
+
+{% block content %}
+    <h1>Личный кабинет</h1>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+        <!-- Секция с информацией о пользователе -->
+        <div style="flex: 1; min-width: 300px;">
+            <div style="padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
+                <h2 style="margin-top: 0;">Мой профиль</h2>
+                
+                <div style="margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Имя:</label>
+                        <div style="padding: 8px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            {{ user.name }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Логин:</label>
+                        <div style="padding: 8px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            {{ user.username }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                        <div style="padding: 8px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            {{ user.email }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Адрес:</label>
+                        <div style="padding: 8px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            {{ user.address }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Телефон:</label>
+                        <div style="padding: 8px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            {{ user.phone }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <a href="#" class="btn" style="margin-right: 10px;">Редактировать профиль</a>
+                        <a href="#" style="color: #e74c3c; text-decoration: none;">Изменить пароль</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция с заказами пользователя -->
+        <div style="flex: 2; min-width: 400px;">
+            <h2>Мои заказы</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for order in orders %}
+                    <div style="border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+                        <!-- Заголовок заказа -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; background-color: #f5f5f5; padding: 10px 15px; border-bottom: 1px solid #ddd;">
+                            <div>
+                                <span style="font-weight: bold;">Заказ #{{ order.id }}</span>
+                                <span style="margin-left: 15px; color: #666;">от {{ order.date }}</span>
+                            </div>
+                            <div>
+                                <span style="padding: 5px 10px; background-color: {% if order.status == 'Доставлен' %}#27ae60{% elif order.status == 'В обработке' %}#f39c12{% elif order.status == 'Отменен' %}#e74c3c{% else %}#3498db{% endif %}; color: white; border-radius: 4px; font-size: 0.9rem;">
+                                    {{ order.status }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Детали заказа -->
+                        <div style="padding: 15px;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #ddd;">
+                                        <th style="padding: 8px; text-align: left;">Товар</th>
+                                        <th style="padding: 8px; text-align: center;">Количество</th>
+                                        <th style="padding: 8px; text-align: right;">Цена</th>
+                                        <th style="padding: 8px; text-align: right;">Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items %}
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 8px; text-align: left;">{{ item.name }}</td>
+                                            <td style="padding: 8px; text-align: center;">{{ item.quantity }}</td>
+                                            <td style="padding: 8px; text-align: right;">{{ item.price }} ₽</td>
+                                            <td style="padding: 8px; text-align: right;">{{ item.price|floatformat:2 }} ₽</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" style="padding: 8px; text-align: right; font-weight: bold;">Итого:</td>
+                                        <td style="padding: 8px; text-align: right; font-weight: bold;">{{ order.total }} ₽</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            
+                            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                                <a href="#" class="btn" style="margin-right: 10px;">Повторить заказ</a>
+                                <a href="#" style="padding: 8px 16px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; color: #333;">Подробности</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="text-align: center; padding: 30px; background-color: #f9f9f9; border-radius: 5px;">
+                        <p>У вас пока нет заказов</p>
+                        <a href="{% url 'catalog' %}" class="btn" style="margin-top: 10px;">Перейти к покупкам</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %} 

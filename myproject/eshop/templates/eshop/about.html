@@ -1,0 +1,78 @@
+{% extends 'eshop/base.html' %}
+
+{% block content %}
+    <h1>О нас</h1>
+    
+    <div style="margin-top: 20px;">
+        <p>Добро пожаловать в наш интернет-магазин! Мы предлагаем широкий ассортимент качественных товаров по доступным ценам.</p>
+        
+        <h2 style="margin-top: 30px;">Наша история</h2>
+        <p>Компания была основана в 2020 году с целью предоставить покупателям удобный и надежный способ приобретения товаров через интернет. За это время мы завоевали доверие тысяч клиентов благодаря нашему внимательному отношению к каждому заказу и высокому качеству обслуживания.</p>
+        
+        <h2 style="margin-top: 30px;">Наши преимущества</h2>
+        <ul style="list-style-type: none; padding: 0;">
+            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+                <div style="min-width: 50px; height: 50px; background-color: #4a76a8; color: white; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold;">1</div>
+                <div>
+                    <h3 style="margin: 0 0 5px 0;">Широкий ассортимент</h3>
+                    <p style="margin: 0;">Мы предлагаем тысячи товаров разных категорий для удовлетворения потребностей наших клиентов.</p>
+                </div>
+            </li>
+            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+                <div style="min-width: 50px; height: 50px; background-color: #4a76a8; color: white; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold;">2</div>
+                <div>
+                    <h3 style="margin: 0 0 5px 0;">Быстрая доставка</h3>
+                    <p style="margin: 0;">Мы гарантируем быструю доставку в любой регион России.</p>
+                </div>
+            </li>
+            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+                <div style="min-width: 50px; height: 50px; background-color: #4a76a8; color: white; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold;">3</div>
+                <div>
+                    <h3 style="margin: 0 0 5px 0;">Гарантия качества</h3>
+                    <p style="margin: 0;">Мы работаем только с проверенными поставщиками и гарантируем качество каждого товара.</p>
+                </div>
+            </li>
+            <li style="display: flex; align-items: center; gap: 15px;">
+                <div style="min-width: 50px; height: 50px; background-color: #4a76a8; color: white; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold;">4</div>
+                <div>
+                    <h3 style="margin: 0 0 5px 0;">Служба поддержки</h3>
+                    <p style="margin: 0;">Наша команда готова ответить на ваши вопросы и помочь с выбором товара 24/7.</p>
+                </div>
+            </li>
+        </ul>
+        
+        <h2 style="margin-top: 30px;">Контактная информация</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+            <div style="flex: 1; min-width: 250px;">
+                <h3>Адрес</h3>
+                <p>г. Москва, ул. Примерная, д. 123</p>
+                <p>Часы работы: Пн-Пт с 9:00 до 20:00, Сб-Вс с 10:00 до 18:00</p>
+            </div>
+            <div style="flex: 1; min-width: 250px;">
+                <h3>Контакты</h3>
+                <p>Телефон: +7 (123) 456-7890</p>
+                <p>Email: info@example.com</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h2>Свяжитесь с нами</h2>
+            <form action="" method="post" style="margin-top: 20px; max-width: 600px;">
+                {% csrf_token %}
+                <div style="margin-bottom: 15px;">
+                    <label for="name" style="display: block; margin-bottom: 5px;">Ваше имя</label>
+                    <input type="text" id="name" name="name" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="email" style="display: block; margin-bottom: 5px;">Email</label>
+                    <input type="email" id="email" name="email" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="message" style="display: block; margin-bottom: 5px;">Сообщение</label>
+                    <textarea id="message" name="message" rows="5" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                </div>
+                <button type="submit" class="btn">Отправить сообщение</button>
+            </form>
+        </div>
+    </div>
+{% endblock %} 

@@ -1,0 +1,58 @@
+{% extends 'eshop/base.html' %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Каталог товаров</h1>
+        <a href="{% url 'add_product' %}" class="btn">Добавить товар</a>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <!-- Фильтры -->
+        <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
+            <h3>Фильтры</h3>
+            <form action="" method="get" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div>
+                    <label for="price_min">Мин. цена:</label>
+                    <input type="number" id="price_min" name="price_min" placeholder="0">
+                </div>
+                <div>
+                    <label for="price_max">Макс. цена:</label>
+                    <input type="number" id="price_max" name="price_max" placeholder="100000">
+                </div>
+                <div>
+                    <label for="category">Категория:</label>
+                    <select id="category" name="category">
+                        <option value="">Все категории</option>
+                        <option value="electronics">Электроника</option>
+                        <option value="clothing">Одежда</option>
+                        <option value="home">Для дома</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="margin-left: auto;">Применить</button>
+            </form>
+        </div>
+        
+        <!-- Список товаров -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            {% for product in products %}
+                <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
+                    <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 100%; height: auto;">
+                    <h3>{{ product.name }}</h3>
+                    <p style="font-weight: bold; color: #4a76a8;">{{ product.price }} ₽</p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <a href="{% url 'product_detail' product.id %}" class="btn">Подробнее</a>
+                        <button class="btn">В корзину</button>
+                    </div>
+                    <!-- Управление товаром -->
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                        <a href="{% url 'edit_product' product.id %}" style="font-size: 0.9rem; color: #333; text-decoration: none;">Изменить</a>
+                        <span style="color: #ccc;">|</span>
+                        <a href="#" style="font-size: 0.9rem; color: #e74c3c; text-decoration: none;">Удалить</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Товары не найдены.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %} 
