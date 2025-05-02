@@ -1,0 +1,51 @@
+{% extends 'eshop/base.html' %}
+{% load form_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Добавление нового тега</h1>
+        </div>
+        
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light py-2 px-3 rounded">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'tag_list' %}">Теги</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Добавление тега</li>
+                </ol>
+            </nav>
+            
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">Название тега</label>
+                    {{ form.name|addclass:"form-control" }}
+                    {% if form.name.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ form.name.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">Описание тега</label>
+                    {{ form.description|addclass:"form-control" }}
+                    {% if form.description.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ form.description.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-primary px-4">Добавить тег</button>
+                    <a href="{% url 'tag_list' %}" class="btn btn-outline-secondary ml-2">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

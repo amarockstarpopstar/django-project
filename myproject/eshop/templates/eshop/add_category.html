@@ -1,0 +1,57 @@
+{% extends 'eshop/base.html' %}
+{% load form_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Добавление новой категории</h1>
+    
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'category_list' %}">Категории</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Добавление категории</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">Название категории</label>
+                            {{ form.name|addclass:"form-control" }}
+                            {% if form.name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">Описание категории</label>
+                            {{ form.description|addclass:"form-control" }}
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.description.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mt-4 text-center">
+                            <button type="submit" class="btn btn-success">Добавить категорию</button>
+                            <a href="{% url 'category_list' %}" class="btn btn-secondary ml-2">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

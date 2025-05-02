@@ -1,0 +1,49 @@
+{% extends 'eshop/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Категории товаров</h1>
+            <a href="{% url 'add_category' %}" class="btn btn-light btn-sm">
+                Добавить категорию
+            </a>
+        </div>
+        
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light py-2 px-3 rounded">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Категории</li>
+                </ol>
+            </nav>
+            
+            <div class="row mt-4">
+                {% for category in categories %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ category.name }}</h5>
+                            <p class="card-text text-muted">{{ category.description|truncatechars:150 }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a href="{% url 'category_detail' category.id %}" class="btn btn-outline-primary btn-sm stretched-link">
+                                Смотреть товары
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <p class="mb-0 text-center">Категории пока не добавлены.
+                            <a href="{% url 'add_category' %}" class="alert-link">Добавить первую категорию</a>
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

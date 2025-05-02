@@ -1,0 +1,68 @@
+{% extends 'eshop/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">{{ tag.name }}</h1>
+        </div>
+        
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light py-2 px-3 rounded">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'tag_list' %}">Теги</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ tag.name }}</li>
+                </ol>
+            </nav>
+            
+            <div class="alert alert-light border mt-3">
+                <p class="lead mb-0">{{ tag.description }}</p>
+            </div>
+            
+            <h2 class="h4 mt-4 mb-3">Товары с тегом "{{ tag.name }}"</h2>
+            
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Нет изображения">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{ product.name }}</h5>
+                            <p class="card-text text-muted">{{ product.description|truncatechars:100 }}</p>
+                            <p class="card-text">
+                                <span class="badge badge-success p-2">{{ product.price }} руб.</span>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">Категория: 
+                                    <a href="{% url 'category_detail' product.category.id %}">{{ product.category.name }}</a>
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <p class="mb-0 text-center">Товаров с данным тегом пока нет.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'tag_list' %}" class="btn btn-outline-secondary">
+                    Вернуться к списку тегов
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -12,7 +12,11 @@
     <div style="display: flex; gap: 30px; flex-wrap: wrap;">
         <!-- Изображение товара -->
         <div style="flex: 1; min-width: 300px;">
-            <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 100%; height: auto; border-radius: 5px;">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; height: auto; border-radius: 5px;">
+            {% else %}
+            <img src="https://via.placeholder.com/300" alt="{{ product.name }}" style="max-width: 100%; height: auto; border-radius: 5px;">
+            {% endif %}
         </div>
         
         <!-- Информация о товаре -->
@@ -24,6 +28,20 @@
             <div style="margin: 20px 0;">
                 <h3>Описание</h3>
                 <p>{{ product.description }}</p>
+            </div>
+            
+            <!-- Теги товара -->
+            <div style="margin: 20px 0;">
+                <h3>Теги</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for tag in product.tags.all %}
+                    <a href="{% url 'tag_detail' tag.id %}" style="text-decoration: none; padding: 5px 10px; background-color: #f0f0f0; border-radius: 15px; color: #333;">
+                        {{ tag.name }}
+                    </a>
+                    {% empty %}
+                    <p>У товара нет тегов</p>
+                    {% endfor %}
+                </div>
             </div>
             
             <!-- Форма добавления в корзину -->
@@ -48,15 +66,17 @@
                     </tr>
                     <tr style="border-bottom: 1px solid #ddd;">
                         <td style="padding: 8px;">Категория</td>
-                        <td style="padding: 8px;">Электроника</td>
+                        <td style="padding: 8px;">
+                            <a href="{% url 'category_detail' product.category.id %}">{{ product.category.name }}</a>
+                        </td>
                     </tr>
                     <tr style="border-bottom: 1px solid #ddd;">
                         <td style="padding: 8px;">Наличие</td>
                         <td style="padding: 8px;">В наличии</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #ddd;">
-                        <td style="padding: 8px;">Гарантия</td>
-                        <td style="padding: 8px;">12 месяцев</td>
+                        <td style="padding: 8px;">Дата добавления</td>
+                        <td style="padding: 8px;">{{ product.created_at|date:"d.m.Y" }}</td>
                     </tr>
                 </table>
             </div>
@@ -67,24 +87,20 @@
     <div style="margin-top: 40px;">
         <h2>Похожие товары</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 15px;">
-            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
-                <img src="https://via.placeholder.com/150" alt="Похожий товар 1" style="max-width: 100%;">
-                <h3>Похожий товар 1</h3>
-                <p style="font-weight: bold; color: #4a76a8;">1500 ₽</p>
-                <a href="#" class="btn">Подробнее</a>
-            </div>
-            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
-                <img src="https://via.placeholder.com/150" alt="Похожий товар 2" style="max-width: 100%;">
-                <h3>Похожий товар 2</h3>
-                <p style="font-weight: bold; color: #4a76a8;">2500 ₽</p>
-                <a href="#" class="btn">Подробнее</a>
-            </div>
-            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
-                <img src="https://via.placeholder.com/150" alt="Похожий товар 3" style="max-width: 100%;">
-                <h3>Похожий товар 3</h3>
-                <p style="font-weight: bold; color: #4a76a8;">3500 ₽</p>
-                <a href="#" class="btn">Подробнее</a>
-            </div>
+            {% for related_product in product.category.products.all|slice:":3" %}
+                {% if related_product.id != product.id %}
+                <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
+                    {% if related_product.image %}
+                    <img src="{{ related_product.image.url }}" alt="{{ related_product.name }}" style="max-width: 100%;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/150" alt="{{ related_product.name }}" style="max-width: 100%;">
+                    {% endif %}
+                    <h3>{{ related_product.name }}</h3>
+                    <p style="font-weight: bold; color: #4a76a8;">{{ related_product.price }} ₽</p>
+                    <a href="{% url 'product_detail' related_product.id %}" class="btn">Подробнее</a>
+                </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %} 

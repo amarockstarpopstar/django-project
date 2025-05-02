@@ -1,4 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ProductForm, CategoryForm, TagForm
+from .models import Product, Category, Tag, Order, OrderPosition
 
 # Homepage view
 def home(request):
@@ -6,50 +8,85 @@ def home(request):
 
 # Catalog view
 def catalog(request):
-    # Sample products data
-    products = [
-        {'id': 1, 'name': 'Товар 1', 'price': 1000, 'image': 'https://via.placeholder.com/150'},
-        {'id': 2, 'name': 'Товар 2', 'price': 2000, 'image': 'https://via.placeholder.com/150'},
-        {'id': 3, 'name': 'Товар 3', 'price': 3000, 'image': 'https://via.placeholder.com/150'},
-    ]
-    return render(request, 'eshop/catalog.html', {'title': 'Каталог', 'products': products})
+    products = Product.objects.filter(is_deleted=False)
+    categories = Category.objects.all()
+    tags = Tag.objects.all()
+    return render(request, 'eshop/catalog.html', {
+        'title': 'Каталог', 
+        'products': products,
+        'categories': categories,
+        'tags': tags
+    })
 
 # Product detail view
 def product_detail(request, product_id):
-    # Sample product data (in real app, this would be fetched from a database)
-    product = {
-        'id': product_id,
-        'name': f'Товар {product_id}',
-        'price': 1000 * product_id,
-        'description': f'Подробное описание товара {product_id}',
-        'image': 'https://via.placeholder.com/300',
-    }
-    return render(request, 'eshop/product_detail.html', {'title': product['name'], 'product': product})
+    product = get_object_or_404(Product, id=product_id, is_deleted=False)
+    return render(request, 'eshop/product_detail.html', {'title': product.name, 'product': product})
 
 # Add product view
 def add_product(request):
     if request.method == 'POST':
-        # Here would be form processing and database save
-        return redirect('catalog')
-    return render(request, 'eshop/add_product.html', {'title': 'Добавление товара'})
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('catalog')
+    else:
+        form = ProductForm()
+    return render(request, 'eshop/add_product.html', {'title': 'Добавление товара', 'form': form})
 
 # Edit product view
 def edit_product(request, product_id):
-    # Sample product data to edit
-    product = {
-        'id': product_id,
-        'name': f'Товар {product_id}',
-        'price': 1000 * product_id,
-        'description': f'Подробное описание товара {product_id}',
-        'image': 'https://via.placeholder.com/300',
-        'category': 'Электроника',
-    }
+    product = get_object_or_404(Product, id=product_id)
     
     if request.method == 'POST':
-        # Here would be form processing and database update
-        return redirect('product_detail', product_id=product_id)
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_detail', product_id=product_id)
+    else:
+        form = ProductForm(instance=product)
     
-    return render(request, 'eshop/edit_product.html', {'title': 'Изменение товара', 'product': product})
+    return render(request, 'eshop/edit_product.html', {'title': 'Изменение товара', 'form': form, 'product': product})
+
+# Category views
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'eshop/category_list.html', {'title': 'Категории', 'categories': categories})
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    products = Product.objects.filter(category=category, is_deleted=False)
+    return render(request, 'eshop/category_detail.html', {'title': category.name, 'category': category, 'products': products})
+
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list')
+    else:
+        form = CategoryForm()
+    return render(request, 'eshop/add_category.html', {'title': 'Добавление категории', 'form': form})
+
+# Tag views
+def tag_list(request):
+    tags = Tag.objects.all()
+    return render(request, 'eshop/tag_list.html', {'title': 'Теги', 'tags': tags})
+
+def tag_detail(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    products = Product.objects.filter(tags=tag, is_deleted=False)
+    return render(request, 'eshop/tag_detail.html', {'title': tag.name, 'tag': tag, 'products': products})
+
+def add_tag(request):
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('tag_list')
+    else:
+        form = TagForm()
+    return render(request, 'eshop/add_tag.html', {'title': 'Добавление тега', 'form': form})
 
 # Cart view
 def cart(request):
@@ -114,26 +151,6 @@ def profile(request):
     }
     
     # Sample orders
-    orders = [
-        {
-            'id': 101,
-            'date': '2023-04-15',
-            'status': 'Доставлен',
-            'total': 5000,
-            'items': [
-                {'name': 'Товар 1', 'quantity': 2, 'price': 1000},
-                {'name': 'Товар 2', 'quantity': 1.5, 'price': 2000},
-            ]
-        },
-        {
-            'id': 102,
-            'date': '2023-04-10',
-            'status': 'В обработке',
-            'total': 3000,
-            'items': [
-                {'name': 'Товар 3', 'quantity': 1, 'price': 3000},
-            ]
-        },
-    ]
+    orders = Order.objects.all()
     
     return render(request, 'eshop/profile.html', {'title': 'Личный кабинет', 'user': user, 'orders': orders})

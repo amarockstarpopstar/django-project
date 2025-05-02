@@ -1,58 +1,112 @@
 {% extends 'eshop/base.html' %}
 
 {% block content %}
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>Каталог товаров</h1>
-        <a href="{% url 'add_product' %}" class="btn">Добавить товар</a>
+<div class="container mt-4">
+    <h1>Каталог товаров</h1>
+    
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Каталог</li>
+                </ol>
+            </nav>
+        </div>
     </div>
     
-    <div style="margin-top: 20px;">
-        <!-- Фильтры -->
-        <div style="margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
-            <h3>Фильтры</h3>
-            <form action="" method="get" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div>
-                    <label for="price_min">Мин. цена:</label>
-                    <input type="number" id="price_min" name="price_min" placeholder="0">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" class="form-inline">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск товаров..." value="{{ request.GET.search }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Поиск</button>
+                    </div>
                 </div>
-                <div>
-                    <label for="price_max">Макс. цена:</label>
-                    <input type="number" id="price_max" name="price_max" placeholder="100000">
-                </div>
-                <div>
-                    <label for="category">Категория:</label>
-                    <select id="category" name="category">
-                        <option value="">Все категории</option>
-                        <option value="electronics">Электроника</option>
-                        <option value="clothing">Одежда</option>
-                        <option value="home">Для дома</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn" style="margin-left: auto;">Применить</button>
             </form>
         </div>
-        
-        <!-- Список товаров -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-            {% for product in products %}
-                <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; text-align: center;">
-                    <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 100%; height: auto;">
-                    <h3>{{ product.name }}</h3>
-                    <p style="font-weight: bold; color: #4a76a8;">{{ product.price }} ₽</p>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <a href="{% url 'product_detail' product.id %}" class="btn">Подробнее</a>
-                        <button class="btn">В корзину</button>
-                    </div>
-                    <!-- Управление товаром -->
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-                        <a href="{% url 'edit_product' product.id %}" style="font-size: 0.9rem; color: #333; text-decoration: none;">Изменить</a>
-                        <span style="color: #ccc;">|</span>
-                        <a href="#" style="font-size: 0.9rem; color: #e74c3c; text-decoration: none;">Удалить</a>
-                    </div>
-                </div>
-            {% empty %}
-                <p>Товары не найдены.</p>
-            {% endfor %}
+        <div class="col-md-6 text-right">
+            <a href="{% url 'add_product' %}" class="btn btn-success">Добавить товар</a>
         </div>
     </div>
+    
+    <div class="row">
+        <!-- Sidebar with filters -->
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Категории</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for category in categories %}
+                    <a href="{% url 'category_detail' category.id %}" class="list-group-item list-group-item-action">
+                        {{ category.name }}
+                    </a>
+                    {% empty %}
+                    <div class="list-group-item">Нет категорий</div>
+                    {% endfor %}
+                    <a href="{% url 'category_list' %}" class="list-group-item list-group-item-action text-primary">
+                        Все категории
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Теги</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for tag in tags %}
+                    <a href="{% url 'tag_detail' tag.id %}" class="list-group-item list-group-item-action">
+                        {{ tag.name }}
+                    </a>
+                    {% empty %}
+                    <div class="list-group-item">Нет тегов</div>
+                    {% endfor %}
+                    <a href="{% url 'tag_list' %}" class="list-group-item list-group-item-action text-primary">
+                        Все теги
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product grid -->
+        <div class="col-md-9">
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Нет изображения">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                            <p class="card-text text-danger font-weight-bold">{{ product.price }} руб.</p>
+                            <p class="card-text">
+                                <small class="text-muted">Категория: 
+                                    <a href="{% url 'category_detail' product.category.id %}">{{ product.category.name }}</a>
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Товары не найдены. 
+                        <a href="{% url 'add_product' %}" class="alert-link">Добавить новый товар</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 

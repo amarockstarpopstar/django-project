@@ -1,52 +1,98 @@
 {% extends 'eshop/base.html' %}
+{% load form_filters %}
 
 {% block content %}
-    <h1>Добавление товара</h1>
+<div class="container mt-4">
+    <h1>Добавление нового товара</h1>
     
-    <div style="margin-top: 20px;">
-        <form method="post" enctype="multipart/form-data" style="max-width: 700px;">
-            {% csrf_token %}
-            
-            <div style="margin-bottom: 20px;">
-                <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">Название товара</label>
-                <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label for="category" style="display: block; margin-bottom: 5px; font-weight: bold;">Категория</label>
-                <select id="category" name="category" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                    <option value="">Выберите категорию</option>
-                    <option value="electronics">Электроника</option>
-                    <option value="clothing">Одежда</option>
-                    <option value="home">Для дома</option>
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label for="price" style="display: block; margin-bottom: 5px; font-weight: bold;">Цена</label>
-                <input type="number" id="price" name="price" min="0" step="0.01" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label for="description" style="display: block; margin-bottom: 5px; font-weight: bold;">Описание товара</label>
-                <textarea id="description" name="description" rows="5" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label for="image" style="display: block; margin-bottom: 5px; font-weight: bold;">Изображение товара</label>
-                <input type="file" id="image" name="image" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                <p style="margin-top: 5px; color: #666; font-size: 0.9rem;">Рекомендуемый размер: 800x600 пикселей</p>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label for="stock" style="display: block; margin-bottom: 5px; font-weight: bold;">Количество на складе</label>
-                <input type="number" id="stock" name="stock" min="0" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-            </div>
-            
-            <div style="margin-top: 30px; display: flex; gap: 15px;">
-                <button type="submit" class="btn">Добавить товар</button>
-                <a href="{% url 'catalog' %}" style="padding: 8px 16px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; color: #333;">Отмена</a>
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'catalog' %}">Каталог</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Добавление товара</li>
+                </ol>
+            </nav>
+        </div>
     </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">Название товара</label>
+                            {{ form.name|addclass:"form-control" }}
+                            {% if form.name.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">Описание товара</label>
+                            {{ form.description|addclass:"form-control" }}
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.description.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.price.id_for_label }}">Цена</label>
+                            {{ form.price|addclass:"form-control" }}
+                            {% if form.price.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.price.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.category.id_for_label }}">Категория</label>
+                            {{ form.category|addclass:"form-control" }}
+                            {% if form.category.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.category.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.tags.id_for_label }}">Теги</label>
+                            {{ form.tags|addclass:"form-control" }}
+                            {% if form.tags.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.tags.errors }}
+                            </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Удерживайте Ctrl (или Command на Mac) для выбора нескольких тегов.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}">Изображение товара</label>
+                            {{ form.image|addclass:"form-control-file" }}
+                            {% if form.image.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ form.image.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group mt-4 text-center">
+                            <button type="submit" class="btn btn-success">Добавить товар</button>
+                            <a href="{% url 'catalog' %}" class="btn btn-secondary ml-2">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 
