@@ -1,0 +1,52 @@
+{% extends 'eshop/base.html' %}
+{% block content %}
+<h1>Оформление заказа</h1>
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+<div class="row">
+  <div class="col-md-7">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="name" class="form-label">Имя получателя</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">Адрес доставки</label>
+        <textarea class="form-control" id="address" name="address" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="phone" class="form-label">Телефон</label>
+        <input type="text" class="form-control" id="phone" name="phone" required>
+      </div>
+      <button type="submit" class="btn btn-success">Подтвердить заказ</button>
+      <a href="{% url 'cart' %}" class="btn btn-secondary">Назад в корзину</a>
+    </form>
+  </div>
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header bg-primary text-white">Ваш заказ</div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          {% for item in cart_items %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ item.name }} x {{ item.quantity }}
+            <span>{{ item.item_total|floatformat:2 }} ₽</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <div class="d-flex justify-content-between">
+          <span>Сумма:</span><span>{{ total }} ₽</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span>Доставка:</span><span>{{ delivery }} ₽</span>
+        </div>
+        <div class="d-flex justify-content-between fw-bold mt-2">
+          <span>Итого:</span><span>{{ total_with_delivery }} ₽</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'eshop/base.html' %}
+{% block content %}
+<h1>Подтвержденные заказы</h1>
+<table class="table table-bordered mt-4">
+  <thead>
+    <tr>
+      <th>№ заказа</th>
+      <th>Имя клиента</th>
+      <th>Телефон</th>
+      <th>Адрес</th>
+      <th>Дата</th>
+      <th>Товары</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.order_number }}</td>
+      <td>{{ order.customer_name }}</td>
+      <td>{{ order.phone_number }}</td>
+      <td>{{ order.delivery_address }}</td>
+      <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+      <td>
+        <ul>
+        {% for pos in order.positions.all %}
+          <li>{{ pos.product.name }} (x{{ pos.quantity }})</li>
+        {% endfor %}
+        </ul>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center">Нет заказов</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

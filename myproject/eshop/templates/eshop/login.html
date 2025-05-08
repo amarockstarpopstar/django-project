@@ -1,0 +1,23 @@
+{% extends 'eshop/base.html' %}
+{% load form_filters %}
+{% block content %}
+<div class="container mt-4" style="max-width: 500px;">
+    <h1 class="mb-4">Вход</h1>
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Логин</label>
+            {{ form.username|addclass:"form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Пароль</label>
+            {{ form.password|addclass:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Войти</button>
+        <a href="{% url 'register' %}" class="btn btn-link">Регистрация</a>
+    </form>
+</div>
+{% endblock %}

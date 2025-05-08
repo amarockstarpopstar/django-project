@@ -98,8 +98,13 @@
                                 </small>
                             </p>
                         </div>
-                        <div class="card-footer bg-white">
+                        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
                             <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Подробнее</a>
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-success btn-sm">В корзину</button>
+                            </form>
                         </div>
                     </div>
                 </div>

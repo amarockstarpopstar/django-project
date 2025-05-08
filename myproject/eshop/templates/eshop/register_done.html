@@ -1,0 +1,10 @@
+{% extends 'eshop/base.html' %}
+{% block content %}
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="alert alert-success text-center">
+        <h2>Регистрация завершена!</h2>
+        <p>Пользователь {{ new_user.username }} успешно зарегистрирован.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+    </div>
+</div>
+{% endblock %}

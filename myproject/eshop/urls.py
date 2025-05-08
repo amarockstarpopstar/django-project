@@ -19,7 +19,17 @@ urlpatterns = [
     path('tags/add/', views.add_tag, name='add_tag'),
     
     path('cart/', views.cart, name='cart'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/clear/', views.clear_cart, name='clear_cart'),
+    path('order/', views.order, name='order'),
+    path('orders/confirmed/', views.confirmed_orders, name='confirmed_orders'),
     path('about/', views.about, name='about'),
     path('api/', views.api_docs, name='api_docs'),
     path('profile/', views.profile, name='profile'),
-] 
+    
+    # User authentication URLs
+    path('register/', views.user_register, name='register'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+]

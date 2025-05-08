@@ -46,7 +46,7 @@
             
             <!-- Форма добавления в корзину -->
             <div style="margin: 20px 0; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
-                <form action="" method="post" style="display: flex; gap: 15px; align-items: center;">
+                <form action="{% url 'add_to_cart' product.id %}" method="post" style="display: flex; gap: 15px; align-items: center;">
                     {% csrf_token %}
                     <div>
                         <label for="quantity">Количество:</label>
@@ -103,4 +103,4 @@
             {% endfor %}
         </div>
     </div>
-{% endblock %} 
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'eshop/base.html' %}
+{% load form_filters %}
+{% block content %}
+<div class="container mt-4" style="max-width: 500px;">
+    <h1 class="mb-4">Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Логин</label>
+            {{ form.username|addclass:"form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            {{ form.email|addclass:"form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Пароль</label>
+            {{ form.password|addclass:"form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_password2" class="form-label">Повторите пароль</label>
+            {{ form.password2|addclass:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+        <a href="{% url 'login' %}" class="btn btn-link">Войти</a>
+    </form>
+</div>
+{% endblock %}
