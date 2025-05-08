@@ -1,12 +1,21 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 from . import views
+from .api import ProductViewSet, CategoryViewSet, TagViewSet
+from .views import AddProductView, EditProductView, DeleteProductView
+
+router = DefaultRouter()
+router.register(r'api/products', ProductViewSet)
+router.register(r'api/categories', CategoryViewSet)
+router.register(r'api/tags', TagViewSet)
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('catalog/', views.catalog, name='catalog'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
-    path('product/add/', views.add_product, name='add_product'),
-    path('product/<int:product_id>/edit/', views.edit_product, name='edit_product'),
+    path('product/add/', AddProductView.as_view(), name='add_product'),
+    path('product/<int:product_id>/edit/', EditProductView.as_view(), name='edit_product'),
+    path('product/<int:pk>/delete/', DeleteProductView.as_view(), name='delete_product'),
     
     # Category URLs
     path('categories/', views.category_list, name='category_list'),
@@ -33,3 +42,5 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
 ]
+
+urlpatterns += router.urls

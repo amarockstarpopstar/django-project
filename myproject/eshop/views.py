@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductForm, CategoryForm, TagForm, UserRegistrationForm, UserLoginForm
 from .models import Product, Category, Tag, Order, OrderPosition
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
 from django.http import HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 # Homepage view
 def home(request):
@@ -27,30 +30,28 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_deleted=False)
     return render(request, 'eshop/product_detail.html', {'title': product.name, 'product': product})
 
-# Add product view
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog')
-    else:
-        form = ProductForm()
-    return render(request, 'eshop/add_product.html', {'title': 'Добавление товара', 'form': form})
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('eshop.add_product', raise_exception=True), name='dispatch')
+class AddProductView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'eshop/add_product.html'
+    success_url = '/catalog/'
 
-# Edit product view
-def edit_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('product_detail', product_id=product_id)
-    else:
-        form = ProductForm(instance=product)
-    
-    return render(request, 'eshop/edit_product.html', {'title': 'Изменение товара', 'form': form, 'product': product})
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('eshop.change_product', raise_exception=True), name='dispatch')
+class EditProductView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'eshop/edit_product.html'
+    success_url = '/catalog/'
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(permission_required('eshop.delete_product', raise_exception=True), name='dispatch')
+class DeleteProductView(DeleteView):
+    model = Product
+    template_name = 'eshop/delete_product.html'
+    success_url = '/catalog/'
 
 # Category views
 def category_list(request):
@@ -62,6 +63,8 @@ def category_detail(request, category_id):
     products = Product.objects.filter(category=category, is_deleted=False)
     return render(request, 'eshop/category_detail.html', {'title': category.name, 'category': category, 'products': products})
 
+@login_required
+@permission_required('eshop.add_category', raise_exception=True)
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -82,6 +85,8 @@ def tag_detail(request, tag_id):
     products = Product.objects.filter(tags=tag, is_deleted=False)
     return render(request, 'eshop/tag_detail.html', {'title': tag.name, 'tag': tag, 'products': products})
 
+@login_required
+@permission_required('eshop.add_tag', raise_exception=True)
 def add_tag(request):
     if request.method == 'POST':
         form = TagForm(request.POST)
@@ -118,6 +123,7 @@ def clear_cart(request):
     return redirect('cart')
 
 # Обновленный view корзины
+@login_required
 def cart(request):
     cart = request.session.get('cart', {})
     cart_items = []
@@ -181,6 +187,7 @@ def api_docs(request):
     return render(request, 'eshop/api_docs.html', {'title': 'API Документация', 'api_endpoints': api_endpoints})
 
 # User profile view
+@login_required
 def profile(request):
     # Sample user data
     user = {
@@ -196,6 +203,7 @@ def profile(request):
     
     return render(request, 'eshop/profile.html', {'title': 'Личный кабинет', 'user': user, 'orders': orders})
 
+@login_required
 def order(request):
     cart = request.session.get('cart', {})
     if not cart:
@@ -244,6 +252,7 @@ def order(request):
     return render(request, 'eshop/order.html', {'cart_items': cart_items, 'total': total, 'delivery': delivery_price, 'total_with_delivery': total_with_delivery})
 
 # Ограничение доступа к подтвержденным заказам (пример)
+@login_required
 @user_passes_test(lambda u: u.is_superuser)
 def confirmed_orders(request):
     orders = Order.objects.all()
