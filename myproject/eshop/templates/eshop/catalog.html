@@ -1,5 +1,11 @@
 {% extends 'eshop/base.html' %}
 
+{% block title %}Каталог товаров{% endblock %}
+
+{% block nav %}
+    {% include 'eshop/_nav.html' %}
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h1>Каталог товаров</h1>
@@ -109,4 +115,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
